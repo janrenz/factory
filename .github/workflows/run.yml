@@ -12,7 +12,7 @@ on:
         description: "Tag or branch of janrenz/factory to run (pin a tag)"
         required: false
         type: string
-        default: v0.1.0
+        default: v0.2.0
       targets:
         description: "Space-separated owner/repo list for a multi-repo job (harness repos only)"
         required: false

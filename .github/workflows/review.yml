@@ -1,0 +1,119 @@
+# Reusable workflow: the factory's reviewers on a pull request, without a factory job.
+# Posts one PR comment (updated on every push) and fails the check on CHANGES.
+# See templates/workflows/factory-review.yml for the caller.
+name: factory review
+on:
+  workflow_call:
+    inputs:
+      lenses:
+        description: "Comma list: security, code, ux, ui — or 'all'"
+        required: false
+        type: string
+        default: security,code
+      factory_ref:
+        description: "Tag or branch of janrenz/factory (pin a tag)"
+        required: false
+        type: string
+        default: v0.2.0
+      fail_on_changes:
+        description: "Fail the check when a lens says CHANGES"
+        required: false
+        type: boolean
+        default: true
+      model:
+        required: false
+        type: string
+        default: ""
+    secrets:
+      ANTHROPIC_API_KEY:
+        required: true
+
+jobs:
+  review:
+    # Fork PRs get no secrets; skip them instead of failing.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Claude Code and the factory
+        env:
+          LENSES: ${{ inputs.lenses }}
+          REF: ${{ inputs.factory_ref }}
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          claude plugin marketplace add "janrenz/factory#$REF"
+          claude plugin install factory@janrenz-factory --scope user
+          if [[ ",$LENSES," == *",ui,"* || "$LENSES" == "all" ]]; then
+            npx --yes playwright install --with-deps chromium
+          fi
+      - name: PR context
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/review"
+          { printf '# %s\n\n' "$TITLE"; printf '%s\n' "$BODY"; } > "$RUNNER_TEMP/review/context.md"
+      - name: Review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LENSES: ${{ inputs.lenses }}
+          BASE: origin/${{ github.event.pull_request.base.ref }}
+        run: |
+          args=(-p "/factory:review $LENSES --base $BASE --out $RUNNER_TEMP/review --context $RUNNER_TEMP/review/context.md"
+                --output-format stream-json --verbose
+                --allowedTools "Bash,Read,Write,Glob,Grep,Agent")
+          [ -n "${{ inputs.model }}" ] && args+=(--model "${{ inputs.model }}")
+          claude "${args[@]}" > "$RUNNER_TEMP/review/run.jsonl"
+      - name: Comment on the PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          d="$RUNNER_TEMP/review"; c="$d/comment.md"
+          verdict=$(head -1 "$d/summary.md" 2>/dev/null || echo "VERDICT: CHANGES")
+          {
+            echo "<!-- factory-review -->"
+            echo "## Factory review · \`${SHA:0:7}\` · ${verdict#VERDICT: }"
+            echo
+            tail -n +2 "$d/summary.md" 2>/dev/null || echo "The review did not produce a summary; see the run log."
+            for f in "$d"/review-*.md; do
+              [ -e "$f" ] || continue
+              lens=$(basename "$f" .md); lens=${lens#review-}
+              echo; echo "<details><summary><b>$lens</b> — $(head -1 "$f")</summary>"; echo
+              tail -n +2 "$f"
+              echo; echo "</details>"
+            done
+          } > "$c"
+          id=$(gh api "repos/${{ github.repository }}/issues/$PR/comments" --paginate \
+                 --jq '.[] | select(.body | startswith("<!-- factory-review -->")) | .id' | tail -1)
+          if [ -n "$id" ]; then
+            gh api -X PATCH "repos/${{ github.repository }}/issues/comments/$id" -F body=@"$c" >/dev/null
+          else
+            gh pr comment "$PR" --body-file "$c"
+          fi
+          echo "$verdict" > "$d/verdict"
+      - name: Keep the review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: factory-review-${{ github.event.pull_request.number }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/review
+          retention-days: 30
+      - name: Verdict
+        if: inputs.fail_on_changes
+        run: |
+          v=$(cat "$RUNNER_TEMP/review/verdict" 2>/dev/null || echo "VERDICT: CHANGES")
+          echo "$v"
+          [ "$v" = "VERDICT: PASS" ]

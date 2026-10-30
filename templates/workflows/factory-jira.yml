@@ -11,7 +11,7 @@ on:
 jobs:
   from-jira:
     if: github.event_name == 'repository_dispatch'
-    uses: janrenz/factory/.github/workflows/run.yml@v0.1.0
+    uses: janrenz/factory/.github/workflows/run.yml@v0.2.0
     with:
       command: "jira ${{ github.event.client_payload.key }}"
       targets: ${{ github.event.client_payload.targets }}
@@ -23,7 +23,7 @@ jobs:
       contains(github.event.issue.labels.*.name, 'factory') &&
       startsWith(github.event.comment.body, '/factory ') &&
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
-    uses: janrenz/factory/.github/workflows/run.yml@v0.1.0
+    uses: janrenz/factory/.github/workflows/run.yml@v0.2.0
     with:
       command: ${{ github.event.comment.body }}
     secrets: inherit

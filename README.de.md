@@ -61,7 +61,7 @@ Für ein ganzes Team: in `.claude/settings.json` des Repos
 ```json
 {
   "extraKnownMarketplaces": {
-    "janrenz-factory": { "source": { "source": "github", "repo": "janrenz/factory", "ref": "v0.1.0" } }
+    "janrenz-factory": { "source": { "source": "github", "repo": "janrenz/factory", "ref": "v0.2.0" } }
   },
   "enabledPlugins": { "factory@janrenz-factory": true }
 }
@@ -78,6 +78,27 @@ Der Ablauf ist **immer derselbe**. Was sich unterscheidet, ist, wer ihn anstöß
 | **`ticket-pr`** | gemergter Ticket-PR `docs/tasks/todo/*.md` | PR-Review, Kommentar | im Hintergrund in GitHub Actions |
 
 Im Hintergrund öffnet die Factory **PRs statt zu mergen** – ein Mensch drückt den Knopf. Ein Jira-Ticket kann auch **mehrere Repos** betreffen: dann ein Job, ein Branch je Repo, ein End-to-End-Kriterium über alle. Details: [`flavours/`](flavours/).
+
+## Reviews auch einzeln
+
+Die vier Reviewer arbeiten auch **ohne Factory-Job** – an jedem Branch oder Pull Request, in jedem Repo:
+
+- **Im Chat:** `/factory:review` prüft den aktuellen Branch gegen den Standard-Branch; `/factory:review security --base origin/release` wählt Linse und Basis.
+- **In der CI:** ein Workflow genügt, und jeder PR bekommt ein Factory-Review als Kommentar, bei jedem Push aktualisiert, mit rotem Check bei CHANGES:
+
+  ```yaml
+  # .github/workflows/factory-review.yml
+  on: { pull_request: { types: [opened, synchronize, reopened, ready_for_review] } }
+  jobs:
+    review:
+      uses: janrenz/factory/.github/workflows/review.yml@v0.2.0
+      with: { lenses: security,code }
+      secrets: inherit          # ANTHROPIC_API_KEY
+  ```
+
+Dieselben Agents, dieselben Regeln: Hat das Repo ein `factory/profile.md`, gilt es auch hier – samt vollständiger Checkliste deiner Secure-Coding-Richtlinie. Ohne Profil nutzen die Reviewer ihre eingebauten Checklisten. **Es gibt also genau einen Security-Reviewer**, für die Factory, für die CI anderer Repos und im Chat.
+
+PRs aus Forks werden übersprungen (sie bekommen keine Secrets). Die Reviewer lesen den Inhalt des PRs mit deinem API-Key; nutze das für PRs aus dem eigenen Team.
 
 ## Dein Projekt im Profil
 

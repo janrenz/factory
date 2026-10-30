@@ -1,0 +1,15 @@
+# The factory's reviewers on every pull request — also in repos without the factory.
+# Needs the secret ANTHROPIC_API_KEY. Uses factory/profile.md if the repo has one.
+name: factory review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  review:
+    if: ${{ !github.event.pull_request.draft }}
+    uses: janrenz/factory/.github/workflows/review.yml@v0.2.0
+    with:
+      lenses: security,code        # or: security,code,ux,ui  /  all
+      fail_on_changes: true
+    secrets: inherit

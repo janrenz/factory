@@ -61,7 +61,7 @@ For a whole team, in the repo's `.claude/settings.json`:
 ```json
 {
   "extraKnownMarketplaces": {
-    "janrenz-factory": { "source": { "source": "github", "repo": "janrenz/factory", "ref": "v0.1.0" } }
+    "janrenz-factory": { "source": { "source": "github", "repo": "janrenz/factory", "ref": "v0.2.0" } }
   },
   "enabledPlugins": { "factory@janrenz-factory": true }
 }
@@ -78,6 +78,27 @@ The process is **always the same**. What differs is who starts it and where you 
 | **`ticket-pr`** | merged ticket PR `docs/tasks/todo/*.md` | PR review, comment | in the background in GitHub Actions |
 
 In the background the factory **opens PRs instead of merging** – a person presses the button. A Jira ticket can also span **several repos**: one job, one branch per repo, one end-to-end criterion across all of them. Details: [`flavours/`](flavours/).
+
+## Reviews on their own
+
+The four reviewers also work **without a factory job** – on any branch or pull request, in any repo:
+
+- **In a chat:** `/factory:review` reviews the current branch against the default branch; `/factory:review security --base origin/release` picks lens and base.
+- **In CI:** add one workflow and every PR gets a factory review as a comment, updated on every push, with a failing check on CHANGES:
+
+  ```yaml
+  # .github/workflows/factory-review.yml
+  on: { pull_request: { types: [opened, synchronize, reopened, ready_for_review] } }
+  jobs:
+    review:
+      uses: janrenz/factory/.github/workflows/review.yml@v0.2.0
+      with: { lenses: security,code }
+      secrets: inherit          # ANTHROPIC_API_KEY
+  ```
+
+Same agents, same rules: if the repo has a `factory/profile.md`, the review applies it – including the complete checklist of your secure-coding guideline. Without a profile the reviewers use their built-in checklists. **So there is exactly one security reviewer**, used by the factory, by CI in other repos and in the chat.
+
+Fork PRs are skipped (they get no secrets). The reviewers run code-reading tools on the PR's content with your API key, so use this for PRs from your own team.
 
 ## Your project in the profile
 

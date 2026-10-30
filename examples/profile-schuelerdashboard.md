@@ -1,5 +1,5 @@
 ---
-factory_version: 0.1.0
+factory_version: 0.2.0
 flavour: local
 main: main
 ci_workflow: ci.yml
