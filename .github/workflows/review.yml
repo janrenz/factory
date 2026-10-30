@@ -14,7 +14,7 @@ on:
         description: "Tag or branch of janrenz/factory (pin a tag)"
         required: false
         type: string
-        default: v0.2.0
+        default: v0.2.1
       fail_on_changes:
         description: "Fail the check when a lens says CHANGES"
         required: false
@@ -66,13 +66,14 @@ jobs:
       - name: Review
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODEL: ${{ inputs.model }}
           LENSES: ${{ inputs.lenses }}
           BASE: origin/${{ github.event.pull_request.base.ref }}
         run: |
           args=(-p "/factory:review $LENSES --base $BASE --out $RUNNER_TEMP/review --context $RUNNER_TEMP/review/context.md"
                 --output-format stream-json --verbose
                 --allowedTools "Bash,Read,Write,Glob,Grep,Agent")
-          [ -n "${{ inputs.model }}" ] && args+=(--model "${{ inputs.model }}")
+          [ -n "$MODEL" ] && args+=(--model "$MODEL")
           claude "${args[@]}" > "$RUNNER_TEMP/review/run.jsonl"
       - name: Comment on the PR
         if: always()

@@ -61,7 +61,7 @@ For a whole team, in the repo's `.claude/settings.json`:
 ```json
 {
   "extraKnownMarketplaces": {
-    "janrenz-factory": { "source": { "source": "github", "repo": "janrenz/factory", "ref": "v0.2.0" } }
+    "janrenz-factory": { "source": { "source": "github", "repo": "janrenz/factory", "ref": "v0.2.1" } }
   },
   "enabledPlugins": { "factory@janrenz-factory": true }
 }
@@ -91,7 +91,7 @@ The four reviewers also work **without a factory job** – on any branch or pull
   on: { pull_request: { types: [opened, synchronize, reopened, ready_for_review] } }
   jobs:
     review:
-      uses: janrenz/factory/.github/workflows/review.yml@v0.2.0
+      uses: janrenz/factory/.github/workflows/review.yml@v0.2.1
       with: { lenses: security,code }
       secrets: inherit          # ANTHROPIC_API_KEY
   ```

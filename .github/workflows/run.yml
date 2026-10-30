@@ -12,7 +12,7 @@ on:
         description: "Tag or branch of janrenz/factory to run (pin a tag)"
         required: false
         type: string
-        default: v0.2.0
+        default: v0.2.1
       targets:
         description: "Space-separated owner/repo list for a multi-repo job (harness repos only)"
         required: false
@@ -72,6 +72,7 @@ jobs:
       - name: Run /factory
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODEL: ${{ inputs.model }}
           GH_TOKEN: ${{ secrets.FACTORY_GH_TOKEN }}
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
@@ -83,7 +84,7 @@ jobs:
           CMD=$(printf '%s' "$CMD" | head -n1); CMD=${CMD#/factory }
           args=(-p "/factory:factory $CMD" --output-format stream-json --verbose
                 --allowedTools "Bash,Read,Write,Edit,Glob,Grep,Agent,SendMessage,TodoWrite,WebFetch")
-          [ -n "${{ inputs.model }}" ] && args+=(--model "${{ inputs.model }}")
+          [ -n "$MODEL" ] && args+=(--model "$MODEL")
           claude "${args[@]}" | tee factory-run.jsonl
       - name: Keep the run log
         if: always()

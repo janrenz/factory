@@ -8,7 +8,7 @@ on:
 jobs:
   review:
     if: ${{ !github.event.pull_request.draft }}
-    uses: janrenz/factory/.github/workflows/review.yml@v0.2.0
+    uses: janrenz/factory/.github/workflows/review.yml@v0.2.1
     with:
       lenses: security,code        # or: security,code,ux,ui  /  all
       fail_on_changes: true

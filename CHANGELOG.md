@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 – 2026-10-30
+
+- `/factory:review` fragt im Chat nicht mehr nach jeder Git- und Agent-Aktion; Modellwahl in den Workflows über `env`.
+
 ## 0.2.0 – 2026-10-30
 
 - Reviewer auch einzeln: `/factory:review` im Chat und wiederverwendbarer Workflow `review.yml` für Pull Requests in jedem Repo.

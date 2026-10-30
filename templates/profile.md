@@ -1,7 +1,7 @@
 ---
 # Factory profile. The core reads the frontmatter; each agent reads
 # `## All agents` plus its own section below. Delete what you don't need.
-factory_version: 0.2.0          # the core version this repo was set up with
+factory_version: 0.2.1          # the core version this repo was set up with
 flavour: local                  # local | jira | ticket-pr
 main: main                      # branch jobs start from and merge into
 ci_workflow: ci.yml             # workflow file the CI gate waits for; "none" = no CI gate

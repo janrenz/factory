@@ -2,7 +2,7 @@
 name: review
 description: Run the factory's reviewers on their own, without a factory job — on the current branch or a pull request, in a chat or in CI. Lenses security, code, ux, ui; uses factory/profile.md when the repo has one. Use for /factory:review, "review this branch", "security review of my PR".
 argument-hint: "[security,code,ux,ui | all] [--base <ref>] [--out <dir>] [--context <file>]"
-allowed-tools: Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/*), Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/*)
+allowed-tools: Bash(git diff *), Bash(git log *), Bash(git fetch *), Bash(git rev-parse *), Bash(git symbolic-ref *), Bash(mkdir *), Bash(bash ${CLAUDE_PLUGIN_ROOT}/scripts/*), Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/*), Read, Write, Glob, Grep, Agent
 ---
 
 # Review without a job

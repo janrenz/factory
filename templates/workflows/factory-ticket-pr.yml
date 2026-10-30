@@ -27,7 +27,7 @@ jobs:
       max-parallel: 1
       matrix:
         file: ${{ fromJSON(needs.tickets.outputs.files) }}
-    uses: janrenz/factory/.github/workflows/run.yml@v0.2.0
+    uses: janrenz/factory/.github/workflows/run.yml@v0.2.1
     with:
       command: "ticket ${{ matrix.file }}"
     secrets: inherit
@@ -38,7 +38,7 @@ jobs:
       contains(github.event.issue.labels.*.name, 'factory') &&
       startsWith(github.event.comment.body, '/factory ') &&
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
-    uses: janrenz/factory/.github/workflows/run.yml@v0.2.0
+    uses: janrenz/factory/.github/workflows/run.yml@v0.2.1
     with:
       command: ${{ github.event.comment.body }}
     secrets: inherit
