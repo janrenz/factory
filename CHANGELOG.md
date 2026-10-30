@@ -6,3 +6,7 @@
 - Flavours `local`, `jira` und `ticket-pr` mit wiederverwendbarem Workflow.
 - Design-Gate mit Figma, FigCraft oder Klick-Prototyp (neue Rolle `prototyper`).
 - Jobs über mehrere Repos (`targets.json`) für den Flavour `jira`.
+
+## Unreleased
+
+- README und Konzept auf Englisch, deutsche Fassungen als `README.de.md` und `docs/konzept.de.md`.

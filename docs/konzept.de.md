@@ -1,5 +1,7 @@
 # Konzept und Vision
 
+[English](concept.md) · **Deutsch**
+
 ## Die Idee in einem Satz
 
 **Software entsteht in einem festen, prüfbaren Ablauf aus Rollen – und ein Mensch entscheidet dort, wo es darauf ankommt.**

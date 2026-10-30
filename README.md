@@ -1,44 +1,46 @@
 # Factory
 
-**Aus einer Anforderung wird ein geprüfter Pull Request – mit Spec, Design, Tests und vier unabhängigen Reviews, nachvollziehbar in Dateien und auf einem Board.**
+**English** · [Deutsch](README.de.md)
 
-Factory ist ein Plugin für [Claude Code](https://claude.com/claude-code). Es macht aus einem einzelnen KI-Assistenten ein **kleines Entwicklungsteam mit festen Rollen**: Eine Spec-Autorin klärt, was gebaut wird. Ein Builder setzt es um. Vier Reviewer prüfen **Sicherheit, Code, Bedienbarkeit und Gestaltung** – parallel und unabhängig voneinander. Ein Approver entscheidet, ob es reicht oder ein Mensch draufschauen muss. Und an den Stellen, die zählen, **entscheidest du**.
+**Turn a request into a reviewed pull request – with a spec, a design, tests and four independent reviews, traceable in files and on a board.**
+
+Factory is a plugin for [Claude Code](https://claude.com/claude-code). It turns a single AI assistant into a **small development team with fixed roles**: a spec writer clarifies what gets built. A builder implements it. Four reviewers check **security, code, usability and visual design** – in parallel and independently. An approver decides whether it is good enough or a human needs to look. And where it matters, **you decide**.
 
 ```
- Anforderung ─► Spec ─► Design ─► Build ─► Security · Code · UX · UI ─► CI ─► Freigabe ─► Merge
-                  ▲        ▲                         │ Änderungen nötig           ▲
-                  │        │                         └──────► Builder ──────────┘ (max. 2 Runden)
-               Mensch   Mensch                                                    Mensch, wenn nötig
+ Request ─► Spec ─► Design ─► Build ─► Security · Code · UX · UI ─► CI ─► Approval ─► Merge
+              ▲        ▲                         │ changes requested          ▲
+              │        │                         └──────► builder ───────────┘ (max. 2 rounds)
+            human    human                                                    human, when needed
 ```
 
 ---
 
-## Warum
+## Why
 
-Ein KI-Assistent im Chat schreibt schnell Code. Was dabei fehlt, ist das, was gute Teams ausmacht:
+An AI assistant in a chat writes code fast. What is missing is what makes good teams good:
 
-- **Klare Anforderungen, bevor gebaut wird.** Ohne Spec baut man das Falsche, nur schneller.
-- **Ein zweiter Blick, der nicht der eigene ist.** Wer seinen Code selbst prüft, findet seine eigenen Fehler nicht.
-- **Ein Gedächtnis.** Was entschieden wurde und warum, steht nach drei Wochen nicht mehr im Chatverlauf.
-- **Grenzen.** Sicherheitsrelevantes, Datenmigrationen und neue Abhängigkeiten gehören vor einen Menschen.
+- **Clear requirements before building.** Without a spec you build the wrong thing, only faster.
+- **A second pair of eyes that is not your own.** Whoever reviews their own code misses their own mistakes.
+- **A memory.** What was decided and why is gone from the chat history three weeks later.
+- **Limits.** Security-relevant changes, data migrations and new dependencies belong in front of a person.
 
-Die Factory baut genau das ein – als **Ablauf, der jedes Mal gleich läuft**, egal wer ihn startet.
+Factory builds exactly that in – as **a process that runs the same way every time**, no matter who starts it.
 
-## Was du bekommst
+## What you get
 
 | | |
 |---|---|
-| **Spec mit prüfbaren Kriterien** | 3–7 Akzeptanzkriterien, jedes mit einem automatischen Test. Sicherheits- und Qualitätsregeln deines Projekts werden zu Kriterien. |
-| **Design vor Code** | Bildschirme kommen aus **Figma**, **FigCraft** oder einem **Klick-Prototyp**, den die Factory selbst baut und dir zur Freigabe zeigt. |
-| **Vier unabhängige Reviews** | Security (mit vollständiger Checkliste deiner Richtlinie), Code, UX und UI. Die UI-Prüfung **rendert die Seiten** bei 375 und 1280 px und vergleicht mit dem Design. |
-| **CI als Wahrheit** | Tests laufen einmal, in deiner CI. Rot heißt: zurück an den Builder. |
-| **Menschliche Gates** | Stack-Wahl, Design, Auth/Secrets/Datenlöschung und alles, was der Approver nicht verantworten will, landen bei dir. |
-| **Alles in Dateien** | Jeder Job hat einen Ordner mit `feature.md`, `spec.md`, `build.md`, Reviews je Runde und `decision.md`. **Nachvollziehbar, diffbar, revisionssicher.** |
-| **Ein Board** | `/factory board` zeigt alle Jobs live: Stufe, Runde, Review-Ampeln. |
-| **Keine Geheimnisse im Code** | Vor jedem Push ein gitleaks-Scan, gepinnt und mit Prüfsumme. |
-| **Parallel arbeiten** | Job-Nummern kommen aus GitHub-Issues, jeder Job hat seine eigene Zustandsdatei. Mehrere Personen, keine Konflikte. |
+| **A spec with testable criteria** | 3–7 acceptance criteria, each with an automated test. Your project's security and quality rules become criteria. |
+| **Design before code** | Screens come from **Figma**, **FigCraft** or a **click-through prototype** the factory builds itself and shows you for approval. |
+| **Four independent reviews** | Security (with a complete checklist of your guideline), code, UX and UI. The UI review **renders the pages** at 375 and 1280 px and compares them with the design. |
+| **CI as the source of truth** | Tests run once, in your CI. Red means: back to the builder. |
+| **Human gates** | Stack choice, design, auth/secrets/data deletion and anything the approver won't sign off land with you. |
+| **Everything in files** | Every job has a folder with `feature.md`, `spec.md`, `build.md`, reviews per round and `decision.md`. **Traceable, diffable, auditable.** |
+| **A board** | `/factory board` shows every job live: stage, round, review lights. |
+| **No secrets in code** | A gitleaks scan before every push, pinned and checksum-verified. |
+| **Work in parallel** | Job numbers come from GitHub issues and every job has its own state file. Several people, no conflicts. |
 
-## In fünf Minuten
+## Five minutes to start
 
 ```text
 /plugin marketplace add janrenz/factory
@@ -46,15 +48,15 @@ Die Factory baut genau das ein – als **Ablauf, der jedes Mal gleich läuft**, 
 /factory init
 ```
 
-`/factory init` legt in deinem Repo `factory/profile.md`, `factory/backlog.md` und `factory/jobs/` an und füllt das Profil aus dem, was dein Repo schon über sich sagt. Lies das Profil, passe es an, committe. Dann:
+`/factory init` creates `factory/profile.md`, `factory/backlog.md` and `factory/jobs/` in your repo and fills the profile from what your repo already says about itself. Read the profile, adjust it, commit. Then:
 
 ```text
-/factory Nutzer können ihr Passwort selbst zurücksetzen
+/factory Users can reset their password themselves
 ```
 
-oder trag Features in `factory/backlog.md` ein und starte mit `/factory next`. In normalen Worten geht es auch: „bau 012“, „gib 014 frei“, „überarbeite die Spec von 015: …“.
+or add features to `factory/backlog.md` and start with `/factory next`. Plain words work too: "build 012", "approve 014", "revise the spec of 015: …".
 
-Für ein ganzes Team: in `.claude/settings.json` des Repos
+For a whole team, in the repo's `.claude/settings.json`:
 
 ```json
 {
@@ -65,51 +67,51 @@ Für ein ganzes Team: in `.claude/settings.json` des Repos
 }
 ```
 
-## Ein Kern, drei Betriebsarten
+## One core, three ways to run it
 
-Der Ablauf ist **immer derselbe**. Was sich unterscheidet, ist, wer ihn anstößt und wo du antwortest:
+The process is **always the same**. What differs is who starts it and where you answer:
 
-| Flavour | Start | Du antwortest | Läuft |
+| Flavour | Started by | You answer | Runs |
 |---|---|---|---|
-| **`local`** | `/factory …` im Chat | im Chat | in deiner Sitzung, du schaust zu |
-| **`jira`** | Label „Agent-Ready“ am Jira-Ticket | Kommentar am Issue, Jira | im Hintergrund in GitHub Actions |
-| **`ticket-pr`** | gemergter Ticket-PR `docs/tasks/todo/*.md` | PR-Review, Kommentar | im Hintergrund in GitHub Actions |
+| **`local`** | `/factory …` in a chat | in the chat | in your session, you watch |
+| **`jira`** | label "Agent-Ready" on a Jira ticket | comment on the issue, Jira | in the background in GitHub Actions |
+| **`ticket-pr`** | merged ticket PR `docs/tasks/todo/*.md` | PR review, comment | in the background in GitHub Actions |
 
-Im Hintergrund öffnet die Factory **PRs statt zu mergen** – ein Mensch drückt den Knopf. Ein Jira-Ticket kann auch **mehrere Repos** betreffen: dann ein Job, ein Branch je Repo, ein End-to-End-Kriterium über alle. Details: [`flavours/`](flavours/).
+In the background the factory **opens PRs instead of merging** – a person presses the button. A Jira ticket can also span **several repos**: one job, one branch per repo, one end-to-end criterion across all of them. Details: [`flavours/`](flavours/).
 
-## Dein Projekt im Profil
+## Your project in the profile
 
-Die Agents sind allgemein. **Was dein Projekt besonders macht, steht in einer Datei:** `factory/profile.md`.
+The agents are generic. **What makes your project special lives in one file:** `factory/profile.md`.
 
-- **Oben (Frontmatter):** Flavour, CI-Workflow, welche Reviews laufen, wo Richtlinien, NFRs und das Design liegen.
-- **Darunter je Rolle ein Abschnitt:** Wer sind die Nutzer? Welche Regeln gelten für jede Spec? Worauf achtet die UX-Prüfung bei Zehnjährigen, worauf bei Verwaltungsprofis?
+- **At the top (frontmatter):** flavour, CI workflow, which reviews run, where guidelines, NFRs and the design live.
+- **Below, one section per role:** Who are the users? Which rules apply to every spec? What does the UX review look for with ten-year-olds, and what with admin professionals?
 
-So bekommt jedes Repo **dieselbe Factory mit eigenem Charakter** – ohne kopierte und auseinanderlaufende Agent-Dateien. Beispiele: [`examples/`](examples/).
+So every repo gets **the same factory with its own character** – without copied agent files drifting apart. Examples: [`examples/`](examples/).
 
-## Design im Spec-Prozess
+## Design in the spec process
 
-Die Spec hat einen Abschnitt `## Design` mit Quelle und Status:
+The spec has a `## Design` section with source and status:
 
-- **Figma** – die Spec nennt Datei und Frames; ein gepinnter Token-Export (`design.tokens`) hält Farben, Typo und Abstände fest. Mit dem Figma-MCP liest die Factory die Frames direkt.
-- **FigCraft** – dasselbe mit einem offenen, selbst gehosteten Design-Werkzeug: Dokument und Frames als Referenz.
-- **Prototyp** – fehlt ein Design, baut der **Prototyper** einen klickbaren HTML-Prototyp mit allen Zuständen (leer, Fehler, viele Einträge …) bei 375 und 1280 px. Du gibst ihn frei oder schreibst, was anders sein soll. Freigegebene Prototypen wandern ins Repo und sind die Referenz für die nächsten Jobs.
+- **Figma** – the spec names the file and frames; a pinned token export (`design.tokens`) fixes colours, type and spacing. With the Figma MCP the factory reads the frames directly.
+- **FigCraft** – the same with an open, self-hosted design tool: document and frames as the reference.
+- **Prototype** – if there is no design, the **prototyper** builds a click-through HTML prototype with every state (empty, error, many items …) at 375 and 1280 px. You approve it or say what should change. Approved prototypes move into the repo and become the reference for the next jobs.
 
-Erst wenn das Design steht, wird gebaut. Die UI-Prüfung legt ihre Screenshots **neben das Design**.
+Building starts only once the design is settled. The UI review puts its screenshots **next to the design**.
 
-## Wie es aussieht
+## What it looks like
 
 ```
 factory/
-├── profile.md                  ← dein Projekt
-├── backlog.md                  ← was als Nächstes kommt
+├── profile.md                  ← your project
+├── backlog.md                  ← what comes next
 └── jobs/
-    └── 042-passwort-reset/
-        ├── state.json          ← Stufe, Runde, Ampeln (fürs Board)
-        ├── feature.md          ← die Anforderung, wörtlich
-        ├── spec.md             ← Problem, Scope, Kriterien, Design, Surfaces
-        ├── design.md           ← Figma-Link oder freigegebener Prototyp
-        ├── prototype/          ← Klick-Prototyp + Screenshots
-        ├── build.md            ← was gebaut wurde, Test-Tabelle, Commits
+    └── 042-password-reset/
+        ├── state.json          ← stage, round, lights (for the board)
+        ├── feature.md          ← the request, verbatim
+        ├── spec.md             ← problem, scope, criteria, design, surfaces
+        ├── design.md           ← Figma link or approved prototype
+        ├── prototype/          ← click-through prototype + screenshots
+        ├── build.md            ← what was built, test table, commits
         ├── round-1/
         │   ├── review-security.md   VERDICT: CHANGES
         │   ├── review-code.md       VERDICT: PASS
@@ -117,15 +119,15 @@ factory/
         │   ├── review-ui.md         VERDICT: PASS  (+ screenshots/)
         │   └── ci.md                CI: success
         ├── round-2/ …
-        └── decision.md         ← APPROVE oder ESCALATE, mit Begründung
+        └── decision.md         ← APPROVE or ESCALATE, with the reason
 ```
 
-## Mehr
+## More
 
-- [Konzept und Vision](docs/konzept.md) – warum die Factory so gebaut ist und wohin sie geht.
-- [Profil-Vorlage](templates/profile.md) · [Flavours](flavours/) · [Workflow-Vorlagen](templates/workflows/)
-- [Änderungen](CHANGELOG.md)
+- [Concept and vision](docs/concept.md) – why the factory is built this way and where it is going.
+- [Profile template](templates/profile.md) · [Flavours](flavours/) · [Workflow templates](templates/workflows/)
+- [Changes](CHANGELOG.md)
 
-## Lizenz
+## License
 
-MIT – siehe [LICENSE](LICENSE). Die Haltung der UI-Prüfung („erst rendern, dann urteilen“) ist angelehnt an `design-critic` aus [plugin87/ux-ui-agent-skills](https://github.com/plugin87/ux-ui-agent-skills) (MIT).
+MIT – see [LICENSE](LICENSE). The UI review's stance ("render first, then judge") is adapted from `design-critic` in [plugin87/ux-ui-agent-skills](https://github.com/plugin87/ux-ui-agent-skills) (MIT).
