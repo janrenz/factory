@@ -1,0 +1,44 @@
+# Flavour ticket-pr: a merged PR that adds docs/tasks/todo/<slug>.md starts a job;
+# comments "/factory approve|rework …" on the job's issue continue it.
+name: factory (ticket-pr)
+on:
+  push:
+    branches: [main]
+    paths: ["docs/tasks/todo/*.md"]
+  issue_comment:
+    types: [created]
+
+jobs:
+  tickets:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.new.outputs.files }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - id: new
+        run: echo "files=$(git diff --name-only --diff-filter=A HEAD~1 HEAD -- 'docs/tasks/todo/*.md' | jq -Rsc 'split("\n")|map(select(length>0))')" >> "$GITHUB_OUTPUT"
+
+  from-ticket:
+    needs: tickets
+    if: needs.tickets.outputs.files != '[]'
+    strategy:
+      max-parallel: 1
+      matrix:
+        file: ${{ fromJSON(needs.tickets.outputs.files) }}
+    uses: janrenz/factory/.github/workflows/run.yml@v0.1.0
+    with:
+      command: "ticket ${{ matrix.file }}"
+    secrets: inherit
+
+  from-comment:
+    if: >
+      github.event_name == 'issue_comment' &&
+      contains(github.event.issue.labels.*.name, 'factory') &&
+      startsWith(github.event.comment.body, '/factory ') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+    uses: janrenz/factory/.github/workflows/run.yml@v0.1.0
+    with:
+      command: ${{ github.event.comment.body }}
+    secrets: inherit

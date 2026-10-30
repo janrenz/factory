@@ -1,0 +1,12 @@
+{
+  "name": "janrenz-factory",
+  "owner": { "name": "Jan Renz" },
+  "description": "The factory plugin.",
+  "plugins": [
+    {
+      "name": "factory",
+      "source": "./",
+      "description": "Software factory: spec → build → parallel reviews → approval → merge. One core, flavours local / jira / ticket-pr."
+    }
+  ]
+}

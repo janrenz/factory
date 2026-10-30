@@ -1,0 +1,10 @@
+{
+  "name": "factory",
+  "version": "0.1.0",
+  "description": "Software factory for Claude Code: spec → build → four parallel reviews → approval → merge, with one core and flavours for local, Jira and ticket-PR operation.",
+  "author": { "name": "Jan Renz" },
+  "homepage": "https://github.com/janrenz/factory",
+  "repository": "https://github.com/janrenz/factory",
+  "license": "MIT",
+  "keywords": ["factory", "agents", "code-review", "workflow", "jira"]
+}

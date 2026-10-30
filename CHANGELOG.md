@@ -1,0 +1,8 @@
+# Changelog
+
+## 0.1.0 – 2026-10-30
+
+- Erste Version: Kern aus Ablauf, acht Rollen, Profil, Board, Prüfskript und Secret-Scan.
+- Flavours `local`, `jira` und `ticket-pr` mit wiederverwendbarem Workflow.
+- Design-Gate mit Figma, FigCraft oder Klick-Prototyp (neue Rolle `prototyper`).
+- Jobs über mehrere Repos (`targets.json`) für den Flavour `jira`.
